@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login Dapp</title>
+    <link rel="stylesheet" href="public/styles/styles.css" />
+  </head>
+  <body>
+    <div class="container">
+      <div class="content">
+        <img
+          class="logo"
+          src="public/assets/ethereum-crypto-cryptocurrency-2-svgrepo-com.svg"
+          width="70"
+          alt=""
+        />
+        <h1 class="title">Login Dapp</h1>
+        <div class="login-content">
+          <p>Please Login with metamask</p>
+          <button id="login-button">
+            <img
+              src="public/assets/metamask-svgrepo-com.svg"
+              width="35"
+              alt=""
+            />
+          </button>
+        </div>
+      </div>
+    </div>
+    <script>
+      const main = async () => {
+        const loginContent = document.querySelector(".login-content");
+        const loginButton = document.querySelector("#login-button");
+
+        if (!window.ethereum) {
+          loginContent.querySelector("p").innerHTML = `Please Install Metamask`;
+          return;
+        }
+
+        const account = await window.ethereum.request({
+          method: "eth_accounts",
+        });
+
+        if (account.length > 0) {
+          loginContent.innerHTML = `
+            <div>
+              Hello: ${account[0]}
+            </div>
+          `;
+        }
+
+        loginButton.addEventListener("click", (e) => {
+          e.preventDefault(e);
+
+          window.ethereum
+            .request({
+              method: "eth_requestAccounts",
+            })
+            .then((res) => {
+              loginContent.innerHTML = `
+                <div>
+                  Hello: ${res[0]}
+                </div>
+              `;
+            })
+            .catch((err) => {
+              loginContent.querySelector(
+                "p"
+              ).innerHTML = `${err.message} please try again.`;
+            });
+        });
+      };
+      main();
+    </script>
+  </body>
+</html>
