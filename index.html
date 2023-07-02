@@ -50,25 +50,24 @@
           `;
         }
 
-        loginButton.addEventListener("click", (e) => {
+        loginButton.addEventListener("click", async (e) => {
           e.preventDefault(e);
-
-          window.ethereum
-            .request({
+          try {
+            const account = await window.ethereum.request({
               method: "eth_requestAccounts",
-            })
-            .then((res) => {
-              loginContent.innerHTML = `
-                <div>
-                  Hello: ${res[0]}
-                </div>
-              `;
-            })
-            .catch((err) => {
+            });
+            loginContent.innerHTML = `
+              <div>
+                Hello: ${account[0]}
+              </div>
+            `;
+          } catch (error) {
+            if (error.code === 4001) {
               loginContent.querySelector(
                 "p"
-              ).innerHTML = `${err.message} please try again.`;
-            });
+              ).innerHTML = `${error.message} please try again.`;
+            }
+          }
         });
       };
       main();
